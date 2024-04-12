@@ -1,0 +1,4 @@
+users - usuarios
+invoices - proyectos
+customers - staff
+revenue - asignaciones
