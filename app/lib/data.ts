@@ -47,8 +47,8 @@ export async function fetchLatestInvoices() {
     }));
     return latestInvoices;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+    console.error('Error en la base de datos:', error);
+    throw new Error('Error al hacer fetch de los ultimos proyectos.');
   }
 }
 
@@ -57,7 +57,7 @@ export async function fetchCardData() {
   try {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
+    // how to initialiace
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
@@ -83,7 +83,7 @@ export async function fetchCardData() {
       totalPendingInvoices,
     };
   } catch (error) {
-    console.error('Database Error:', error);
+    console.error('Database error:', error);
     throw new Error('Failed to fetch card data.');
   }
 }
@@ -164,7 +164,7 @@ export async function fetchInvoiceById(id: string) {
 
     const invoice = data.rows.map((invoice) => ({
       ...invoice,
-      // Convert amount from cents to dollars
+      // Convert amount from cents to euros
       amount: invoice.amount / 100,
     }));
 
