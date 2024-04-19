@@ -1,4 +1,3 @@
-import { CogIcon } from '@heroicons/react/24/outline';
 import { lusitana } from './invoices/fonts';
 
 export default function AcmeLogo() {
@@ -6,8 +5,7 @@ export default function AcmeLogo() {
     <div
       className={`${lusitana.className} flex flex-row items-center leading-none text-white`}
     >
-      <	CogIcon className="h-28 w-16" />
-      <p className="text-[40px]">Stafko</p>
+      <img src="/logo.png" alt="Logo" className="h-28 w-28 mb-2 ml-12 justify-center rounded-full" />
     </div>
   );
 }
