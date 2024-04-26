@@ -165,6 +165,59 @@ const invoices = [
   },
 ];
 
+const projects = [
+  {
+    id: '6b8e7394-bc4b-4fb1-87a7-fec4b6a6442a',
+    staff_id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    name: 'Project One',
+    start_date: '2022-01-01',
+    end_date: '2022-12-31',
+    description: 'This is the first project',
+    amount: 5000,
+    status: 'active',
+  },
+  {
+    id: 'c07e224a-aa2d-48c2-a000-fec4b6a6442a',
+    staff_id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
+    name: 'Project Two',
+    start_date: '2022-02-01',
+    end_date: '2022-11-30',
+    description: 'This is the second project',
+    amount: 8000,
+    status: 'completed',
+  },
+  {
+    id: 'b166a29f-367b-457a-8e21-fec4b6a6442a',
+    staff_id: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    name: 'Project Three',
+    start_date: '2022-03-01',
+    end_date: '2022-10-31',
+    description: 'This is the third project',
+    amount: 10000,
+    status: 'active',
+  },
+  {
+    id: 'f9d1f3eb-2bcb-42f2-b572-fec4b6a6442a',
+    staff_id: '13D07535-C59E-4157-A011-F8D2EF4E0CBB',
+    name: 'Project Four',
+    start_date: '2022-04-01',
+    end_date: '2022-09-30',
+    description: 'This is the fourth project',
+    amount: 7000,
+    status: 'completed',
+  },
+  {
+    id: '6d13a034-2ed1-4c6e-9536-fec4b6a6442a',
+    staff_id: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    name: 'Project Five',
+    start_date: '2022-05-01',
+    end_date: '2022-08-31',
+    description: 'This is the fifth project',
+    amount: 6000,
+    status: 'active',
+  },
+];
+
 const revenue = [
   { month: 'Jan', revenue: 2000 },
   { month: 'Feb', revenue: 1800 },
@@ -180,9 +233,40 @@ const revenue = [
   { month: 'Dec', revenue: 4800 },
 ];
 
+const staff = [
+  {
+    id: 'd4818200-6f2e-441e-8c1b-869f61f49c7a',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+  },
+  {
+    id: '2fba8c60-71af-4785-8278-7cb14f5a5cc1',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+  },
+  {
+    id: 'd3db785a-9567-4fb3-b6c2-2f2538ae2b50',
+    name: 'Michael Johnson',
+    email: 'michael.johnson@example.com',
+  },
+  {
+    id: 'e9be7c78-768c-4184-8645-4b62cf56317a',
+    name: 'Emily Davis',
+    email: 'emily.davis@example.com',
+  },
+  {
+    id: 'ed6c4b4e-27ed-4b7c-b9e4-f2950c0ee490',
+    name: 'David Brown',
+    email: 'david.brown@example.com',
+  },
+];
+
 module.exports = {
   users,
   customers,
   invoices,
   revenue,
+  projects,
+  staff,
+  projects,
 };

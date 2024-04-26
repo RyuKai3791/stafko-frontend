@@ -4,9 +4,11 @@ import {
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
-  LatestInvoiceRaw,
+  LatestInvoice,
   User,
   Revenue,
+  ProjectsTable,
+  Staff
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -32,7 +34,7 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   noStore();
   try {
-    const data = await sql<LatestInvoiceRaw>`
+    const data = await sql<LatestInvoice>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
@@ -145,6 +147,28 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
+export async function fetchProjectsPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+      FROM projects
+      WHERE
+        projects.name ILIKE ${`%${query}%`} OR
+        projects.description ILIKE ${`%${query}%`} OR
+        projects.amount::text ILIKE ${`%${query}%`} OR
+        projects.start_date::text ILIKE ${`%${query}%`} OR
+        projects.end_date::text ILIKE ${`%${query}%`} OR
+        projects.status ILIKE ${`%${query}%`}
+    `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of projects.');
+  }
+}
+
 export async function fetchInvoiceById(id: string) {
   noStore();
   try {
@@ -162,7 +186,7 @@ export async function fetchInvoiceById(id: string) {
       ...invoice,
       amount: invoice.amount / 100,
     }));
-    console.log(invoice); // Invoice is an empty array []
+    console.log(invoice);
 
     return invoice[0];
   } catch (error) {
@@ -189,6 +213,49 @@ export async function fetchCustomers() {
   }
 }
 
+export async function fetchFilteredProjects(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const data = await sql<ProjectsTable>`
+		SELECT
+		  projects.id,
+		  projects.staff_id,
+		  projects.name,
+		  projects.description,
+		  projects.amount,
+		  projects.start_date,
+		  projects.end_date,
+		  projects.status,
+		  ARRAY_AGG(staff.name) AS staff
+		FROM projects
+		LEFT JOIN staff ON projects.staff_id = staff.id
+		WHERE
+		  projects.name ILIKE ${`%${query}%`} OR
+      projects.description ILIKE ${`%${query}%`}
+		GROUP BY projects.id, projects.staff_id, projects.name, projects.description, projects.amount, projects.start_date, projects.end_date, projects.status
+		ORDER BY projects.name ASC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+	  `;
+    // Maneja el caso en el que no haya personal asignado al proyecto
+    const projects = data.rows.map((project) => ({
+      ...project,
+      staff: project.amount || [], 
+    })); 
+
+    return projects;
+    
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch projects.');
+  }
+  
+}
+
 export async function fetchFilteredCustomers(query: string) {
   noStore();
   try {
@@ -205,7 +272,7 @@ export async function fetchFilteredCustomers(query: string) {
 		LEFT JOIN invoices ON customers.id = invoices.customer_id
 		WHERE
 		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
+      customers.email ILIKE ${`%${query}%`}
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `;

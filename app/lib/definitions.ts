@@ -1,12 +1,25 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
   name: string;
   email: string;
   password: string;
+};
+
+export type Staff = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+export type Project = {
+  id: string;
+  staff_id: string;
+  name: string;
+  description: string;
+  amount: number;
+  start_date: string;
+  end_date: string;
+  status: 'active' | 'completed';
 };
 
 export type Customer = {
@@ -21,8 +34,6 @@ export type Invoice = {
   customer_id: string;
   amount: number;
   date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
   status: 'pending' | 'paid';
 };
 
@@ -36,12 +47,25 @@ export type LatestInvoice = {
   name: string;
   image_url: string;
   email: string;
-  amount: string;
+  amount: number;
 };
 
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
-export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
+export type LatestProject = {
+  id: string;
+  name: string;
   amount: number;
+};
+
+export type ProjectsTable = {
+  id: string;
+  staff_id: string;
+  staff_name: string;
+  name: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  amount: number;
+  status: 'active' | 'completed';
 };
 
 export type InvoicesTable = {
@@ -75,9 +99,26 @@ export type FormattedCustomersTable = {
   total_paid: string;
 };
 
+export type StaffField = {
+  id: string;
+  name: string;
+};
+
 export type CustomerField = {
   id: string;
   name: string;
+};
+
+export type ProjectForm = {
+  id: string;
+  staff_id: string;
+  all_staff: StaffField[];
+  name: string;
+  description: string;
+  amount: number;
+  start_date: string;
+  end_date: string;
+  status: 'active' | 'completed';
 };
 
 export type InvoiceForm = {

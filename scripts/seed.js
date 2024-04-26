@@ -3,6 +3,8 @@ const {
   invoices,
   customers,
   revenue,
+  projects,
+  staff, // AÑADIR TABLA STAFF
   users,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
@@ -42,6 +44,94 @@ async function seedUsers(client) {
     };
   } catch (error) {
     console.error('Error seeding users:', error);
+    throw error;
+  }
+}
+
+async function seedStaff(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "staff" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS staff (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email TEXT NOT NULL UNIQUE
+      );
+    `;
+
+    console.log(`Created "staff" table`);
+
+    // Insert data into the "staff" table
+    const insertedStaff = await Promise.all(
+      staff.map(async (staff) => {
+        return client.sql`
+          INSERT INTO staff (id, name, email)
+          VALUES (${staff.id}, ${staff.name}, ${staff.email})
+          ON CONFLICT (id) DO NOTHING;
+        `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedStaff.length} staff members`);
+
+    return {
+      createTable,
+      staff: insertedStaff,
+    };
+  } catch (error) {
+    console.error('Error seeding staff:', error);
+    throw error;
+  }
+}
+
+main().catch((err) => {
+  console.error(
+    'An error occurred while attempting to seed the database:',
+    err,
+  );
+});
+
+async function seedProjects(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "projects" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS projects (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        staff_id UUID NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        amount INT NOT NULL,
+        start_date DATE NOT NULL,
+        end_date DATE NOT NULL,
+        status VARCHAR(255) NOT NULL
+      );
+    `;
+
+    console.log(`Created "projects" table`);
+
+    // Insert data into the "projects" table
+    const insertedProjects = await Promise.all(
+      projects.map(
+        (project) => client.sql`
+        INSERT INTO projects (id, staff_id, name, start_date, end_date, description, amount, status)
+        VALUES (${project.id}, ${project.staff_id}, ${project.name}, ${project.start_date}, ${project.end_date}, ${project.description}, ${project.amount}, ${project.status})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedProjects.length} projects`);
+
+    return {
+      createTable,
+      projects: insertedProjects,
+    };
+  } catch (error) {
+    console.error('Error seeding projects:', error);
     throw error;
   }
 }
@@ -164,10 +254,12 @@ async function main() {
   const client = await db.connect();
 
   await seedUsers(client);
+  await seedProjects(client);
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
-
+  await seedStaff(client);
+  
   await client.end();
 }
 

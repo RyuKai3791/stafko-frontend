@@ -24,3 +24,7 @@ body {
   background-repeat: no-repeat;
   overflow: hidden;
 }
+
+div.relative:nth-child(1) {
+  margin-top: 0px;
+}
