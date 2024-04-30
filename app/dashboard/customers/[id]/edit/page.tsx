@@ -1,4 +1,4 @@
-import Form from '@/app/ui/invoices/edit-form';
+import Form from '@/app/ui/invoices/edit-form'; // ACTUALIZAR IMPORTS
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
@@ -18,10 +18,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Projects', href: '/dashboard/invoices' },
+          { label: 'Customers', href: '/dashboard/customers' },
           {
-            label: 'Edit Project',
-            href: `/dashboard/projects/${id}/edit`,
+            label: 'Edit Customer',
+            href: `/dashboard/customers/${id}/edit`,
             active: true,
           },
         ]}

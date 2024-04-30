@@ -3,6 +3,8 @@ import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredInvoices } from '@/app/lib/data';
+import { enUS } from 'date-fns/locale';
+import { format, hoursToMinutes } from 'date-fns';
 
 export default async function InvoicesTable({
   query,
@@ -13,10 +15,15 @@ export default async function InvoicesTable({
 }) {
   const invoices = await fetchFilteredInvoices(query, currentPage);
 
+  const formatDateToLocal = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, 'yyyy LLL d', { locale: enUS });
+  };
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+        <div className="rounded-lg bg-sky-100 bg-opacity-95 p-2 md:pt-0">
           <div className="md:hidden">
             {invoices?.map((invoice) => (
               <div

@@ -4,6 +4,8 @@ import ProjectStatus from '@/app/ui/projects/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredProjects } from '@/app/lib/data';
 import { Project } from '@/app/lib/definitions';
+import { enUS } from 'date-fns/locale';
+import { format } from 'date-fns';
 
 export default async function ProjectsTable({
   query,
@@ -14,10 +16,15 @@ export default async function ProjectsTable({
 }) {
   const projects = await fetchFilteredProjects(query, currentPage);
 
+  const formatDateToLocal = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, 'yyyy LLL d', { locale: enUS });
+  };
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+        <div className="rounded-lg bg-sky-100 bg-opacity-95 p-2 md:pt-0">
           <div className="md:hidden">
             {projects?.map((project: Project) => (
               <div
