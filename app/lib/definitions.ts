@@ -109,6 +109,11 @@ export type CustomerField = {
   name: string;
 };
 
+export type ProjectField = {
+  id: string;
+  name: string;
+}
+
 export type ProjectForm = {
   id: string;
   staff_id: string;

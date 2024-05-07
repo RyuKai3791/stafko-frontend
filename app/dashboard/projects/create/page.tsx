@@ -1,6 +1,7 @@
-import Form from '@/app/ui/projects/create-form'; // CAMBIAR
+import Form from '@/app/ui/projects/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchCustomers } from '@/app/lib/data';
+import { projects } from '@/app/lib/placeholder-data';
  
 export default async function Page() {
   const customers = await fetchCustomers();
@@ -12,12 +13,12 @@ export default async function Page() {
           { label: 'Projects', href: '/dashboard/projects' },
           {
             label: 'Create Project',
-            href: '/dashboard/project/create',
+            href: '/dashboard/projects/create',
             active: true,
           },
         ]}
       />
-      {/* <Form customers={customers} /> */}
+      <Form projects={projects} />
     </main>
   );
 }

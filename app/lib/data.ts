@@ -213,6 +213,30 @@ export async function fetchCustomers() {
   }
 }
 
+export async function fetchProjects() {
+  noStore();
+  try {
+    const data = await sql<ProjectsTable>`
+      SELECT
+        projects.id,
+        projects.name,
+        projects.description,
+        projects.amount,
+        projects.start_date,
+        projects.end_date,
+        projects.status,
+        projects.staff_count
+      FROM projects
+    `;
+
+    const projects = data.rows;
+    return projects;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all projects.');
+  }
+}
+
 export async function fetchFilteredProjects(
   query: string,
   currentPage: number,
