@@ -259,7 +259,7 @@ async function main() {
   await seedInvoices(client);
   await seedRevenue(client);
   await seedStaff(client);
-  
+
   await client.end();
 }
 

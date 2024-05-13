@@ -23,6 +23,11 @@ const links = [
     icon: FolderIcon
   },
   {
+    name: 'Tracker',
+    href: '/dashboard/tracker',
+    icon: ClockIcon,
+  },
+  {
     name: 'Invoices',
     href: '/dashboard/invoices',
     icon: CurrencyEuroIcon,
@@ -31,11 +36,6 @@ const links = [
     name: 'Customers',
     href: '/dashboard/customers', 
     icon: UserGroupIcon 
-  },
-  {
-    name: 'Tracker',
-    href: '/dashboard/tracker',
-    icon: ClockIcon,
   },
 ];
 
@@ -56,7 +56,7 @@ export default function NavLinks() {
               },
             )}
           >
-            <LinkIcon className="w-6" />
+          <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
         );

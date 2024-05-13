@@ -225,7 +225,6 @@ export async function fetchProjects() {
         projects.start_date,
         projects.end_date,
         projects.status,
-        projects.staff_count
       FROM projects
     `;
 
@@ -265,10 +264,10 @@ export async function fetchFilteredProjects(
 		ORDER BY projects.name ASC
     LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
 	  `;
-    // Maneja el caso en el que no haya personal asignado al proyecto
+    // 0 STAFF ASIGNED CASE
     const projects = data.rows.map((project) => ({
       ...project,
-      staff: project.amount || [], 
+      staff: project.amount || [],
     })); 
 
     return projects;
@@ -277,7 +276,6 @@ export async function fetchFilteredProjects(
     console.error('Database Error:', error);
     throw new Error('Failed to fetch projects.');
   }
-  
 }
 
 export async function fetchFilteredCustomers(query: string) {

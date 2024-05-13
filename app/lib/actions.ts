@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import clockifyClient from './clockifyClient'; // 1!
  
 const FormSchema = z.object({
   id: z.string(),
@@ -23,7 +24,6 @@ const ProjectSchema = z.object({
   startDate: z.string(),
   endDate: z.string(),
   status: z.enum(['active', 'completed']),
-  staffCount: z.number(),
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
@@ -62,7 +62,7 @@ export async function updateInvoice(id: string, formData: FormData) {
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
- 
+
   const amountInCents = amount * 100;
   
   try {
@@ -92,22 +92,21 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function createProject(formData: FormData) {
-  const { name, description, amount, startDate, endDate, status, staffCount } = CreateProject.parse({
+  const { name, description, amount, startDate, endDate, status } = CreateProject.parse({
     name: formData.get('name'),
     description: formData.get('description'),
     amount: formData.get('amount'),
     startDate: formData.get('startDate'),
     endDate: formData.get('endDate'),
     status: formData.get('status'),
-    staffCount: formData.get('staffCount'),
   });
 
   const amountInCents = amount * 100;
 
   try {
     await sql`
-      INSERT INTO projects (name, description, amount, start_date, end_date, status, staff_count)
-      VALUES (${name}, ${description}, ${amountInCents}, ${startDate}, ${endDate}, ${status}, ${staffCount})
+      INSERT INTO projects (name, description, amount, start_date, end_date, status)
+      VALUES (${name}, ${description}, ${amountInCents}, ${startDate}, ${endDate}, ${status})
     `;
   } catch (error) {
     return {
@@ -120,24 +119,22 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: string, formData: FormData) {
-  const { name, description, amount, startDate, endDate, status, staffCount } = UpdateProject.parse({
+  const { name, description, amount, startDate, endDate, status} = UpdateProject.parse({
     name: formData.get('name'),
     description: formData.get('description'),
     amount: formData.get('amount'),
     startDate: formData.get('startDate'),
     endDate: formData.get('endDate'),
     status: formData.get('status'),
-    staffCount: formData.get('staffCount'),
   });
 
   const amountInCents = amount * 100;
 
   try {
-    // TENER EN CUENTA PARA ACTUALIZAR SEED O PLACEHOLDER.DATA
     await sql`
       UPDATE projects
       SET name = ${name}, description = ${description}, amount = ${amountInCents},
-          start_date = ${startDate}, end_date = ${endDate}, status = ${status}, staff_count = ${staffCount}
+        start_date = ${startDate}, end_date = ${endDate}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
