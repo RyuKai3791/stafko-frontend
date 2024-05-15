@@ -1,12 +1,12 @@
-import Pagination from '@/app/ui/invoices/pagination' // CAMBIAR IMPORTS
+import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/customers/table';
 import { CreateCustomer } from '@/app/ui/customers/buttons';
 import { lusitana } from '../../ui/invoices/fonts';
-import { ProjectsTableSkeleton } from '@/app/ui/skeletons';
-import { fetchProjectsPages } from '@/app/lib/data';
+import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+import { fetchInvoicesPages } from '@/app/lib/data';
 import { Suspense } from 'react';
-
+ 
 export default async function Page({
   searchParams,
 }: {
@@ -18,9 +18,8 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchProjectsPages(query);
-// Implement Clockify with a new sidebar button called "Tracker". This new button should navigate to the tracker page. The tracker page should give the user a dropdown menu to select one project of a list, then, the project information shows up along with a button on his right called "Track". This "Track" button should, when clicked, start a visible counter with hours, minutes and seconds and change the inner text of the button to "Stop tracking". When clicked again, the counter stops and returns to "Track". The track data (time spent) should be stored in my vercel postgre database . In case you need it, make the necessary changes at "lib" files or another ones.
-// Para resolver un error, necesito que revises varios archivos, individualmente, y en su conjunto, separados por el nombre. El error en mi aplicacion nextjs es:
+  const totalPages = await fetchInvoicesPages(query);
+
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -30,8 +29,8 @@ export default async function Page({
         <Search placeholder="Search customers" />
         <CreateCustomer />
       </div>
-      <Suspense key={query + currentPage} fallback={<ProjectsTableSkeleton />}>
-        {/* <Table query={query} currentPage={currentPage} /> */}
+      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+        <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

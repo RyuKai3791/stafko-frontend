@@ -6,8 +6,8 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
-import clockifyClient from './clockifyClient'; // 1!
- 
+// import clockifyClient from './clockifyClient';
+
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string(),
@@ -26,11 +26,21 @@ const ProjectSchema = z.object({
   status: z.enum(['active', 'completed']),
 });
 
+const CustomerSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  image_url: z.string(),
+});
+  
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 const CreateProject = ProjectSchema.omit({ id: true });
 const UpdateProject = ProjectSchema.omit({ id: true });
+
+const CreateCustomer = CustomerSchema.omit({ id: true });
+const UpdateCustomer = CustomerSchema.omit({ id: true });
 
 export async function createInvoice(formData: FormData) {
     const { customerId, amount, status } = CreateInvoice.parse({
@@ -154,6 +164,61 @@ export async function deleteProject(id: string) {
     return { message: 'Deleted project.' };
   } catch (error) {
     return { message: 'Database error: Failed to delete project.' };
+  }
+}
+
+export async function createCustomer(formData: FormData) {
+  const { name, email, image_url } = CreateCustomer.parse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image_url: formData.get('image_url'),
+  });
+
+  try {
+    await sql`
+      INSERT INTO projects (name, description, amount, start_date, end_date, status)
+      VALUES (${name}, ${email}, ${image_url})
+    `;
+  } catch (error) {
+    return {
+      message: 'Database error: Failed to create project.'
+    };
+  }
+
+  revalidatePath('/dashboard/projects');
+  redirect('/dashboard/projects');
+}
+
+export async function updateCustomer(id: string, formData: FormData) {
+  const { name, email, image_url } = UpdateCustomer.parse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image_url: formData.get('image_url'),
+  });
+
+  try {
+    await sql`
+      UPDATE customers
+      SET name = ${name}, email = ${email}, image_url = ${image_url}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return {
+      message: 'Database error: Failed to update customer.'
+    };
+  }
+
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
+}
+
+export async function deleteCustomer(id: string) {
+  try {
+    await sql`DELETE FROM customers WHERE id = ${id}`;
+    revalidatePath('/dashboard/customers');
+    return { message: 'Deleted customer.' };
+  } catch (error) {
+    return { message: 'Database error: Failed to delete customer.' };
   }
 }
 

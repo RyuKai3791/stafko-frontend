@@ -56,9 +56,6 @@ export default async function ProjectsTable({
                     </p>
                     <p>{formatDateToLocal(project.start_date)} - {formatDateToLocal(project.end_date)}</p>
                   </div>
-                  <div className="flex justify-end gap-2">
-                    {/* <TrackerButton id={project.id} /> */}
-                  </div>
                 </div>
               </div>
             ))}
@@ -81,8 +78,8 @@ export default async function ProjectsTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
                 </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Start</span>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Tracker
                 </th>
               </tr>
             </thead>
@@ -102,9 +99,9 @@ export default async function ProjectsTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     <ProjectStatus status={project.status} />
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <TrackerButton />
+                  <td className="whitespace-nowrap py-3 pl-4 pr-3">
+                    <div className="flex gap-3">
+                      <TrackerCounter />
                     </div>
                   </td>
                 </tr>

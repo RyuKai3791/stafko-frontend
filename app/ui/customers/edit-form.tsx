@@ -1,16 +1,24 @@
+'use client';
+
+import { CustomerField, InvoiceForm } from '@/app/lib/definitions';
+import {
+  InboxStackIcon,
+  PhotoIcon,
+  UserCircleIcon,
+} from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { UserCircleIcon, InboxStackIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createCustomer } from '@/app/lib/actions';
-import { CustomerField } from '@/app/lib/definitions';
+import { updateCustomer } from '@/app/lib/actions';
 
-interface FormProps {
+export default function EditCustomerForm({
+  customers,
+}: {
   customers: CustomerField[];
-}
+}) {
+  const updateCustomerWithId = updateCustomer.bind(null, customers.id);
 
-export default function Form({ customers }: FormProps) {
   return (
-    <form action={createCustomer}>
+    <form action={updateCustomerWithId}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer name */}
         <div className="mb-4">
@@ -65,8 +73,6 @@ export default function Form({ customers }: FormProps) {
           </div>
         </div>
       </div>
-
-      {/* Buttons */}
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard/customers"
@@ -74,7 +80,7 @@ export default function Form({ customers }: FormProps) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Customer</Button>
+        <Button type="submit">Edit customer</Button>
       </div>
     </form>
   );
