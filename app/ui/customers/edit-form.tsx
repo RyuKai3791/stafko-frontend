@@ -15,7 +15,7 @@ export default function EditCustomerForm({
 }: {
   customers: CustomerField[];
 }) {
-  const updateCustomerWithId = updateCustomer.bind(null, customers.id);
+  const updateCustomerWithId = updateCustomer.bind(null, customers[0].id);
 
   return (
     <form action={updateCustomerWithId}>
