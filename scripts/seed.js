@@ -4,7 +4,7 @@ const {
   customers,
   revenue,
   projects,
-  staff, // AÑADIR TABLA STAFF
+  staff,
   users,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
