@@ -16,7 +16,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 export async function fetchRevenue() {
   noStore();
   try {
-    // Delay a response for demo purposes. Don't do this in production
+    // Response delay for demo purposes
     console.log('Fetching revenue data...');
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
