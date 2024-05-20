@@ -8,9 +8,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: theme => ({
-        'custom-image': "url('/path/to/your/image.jpg')",
-      }),
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',
       },
@@ -30,20 +27,7 @@ const config: Config = {
       },
     },
   },
-  variants: {},
   plugins: [require('@tailwindcss/forms')],
 };
-
-module.exports = {
-  theme: {
-    extend: {
-      backgroundImage: (theme: any) => ({
-        'custom-image': "url('/path/to/your/image.jpg')", // replace '/path/to/your/image.jpg' with your image path
-      })
-    }
-  },
-  variants: {},
-  plugins: [],
-}
 
 export default config;
