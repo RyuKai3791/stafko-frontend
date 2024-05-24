@@ -16,29 +16,35 @@ cd ./app && npm install
 
 <br></br>
 App will run at: [http://localhost:3000](http://localhost:3000)
+<br></br>
 
-App
+## Sections:
+### App
 <p align="center">
   <img src="/public/app.png" alt="App Screenshot" />
 </p>
-Dashboard
+
+### Dashboard
 <p align="center">
   <img src="/public/dashboard.png" alt="Dashboard Screenshot" />
 </p>
-Projects
+
+### Projects
 <p align="center">
   <img src="/public/projects.png" alt="Projects Screenshot" />
 </p>
-Tracker
+
+### Tracker
 <p align="center">
   <img src="/public/tracker.png" alt="Tracker Screenshot" />
 </p>
-Invoices
+
+### Invoices
 <p align="center">
   <img src="/public/invoices.png" alt="Invoices Screenshot" />
 </p>
-Customers
+
+### Customers
 <p align="center">
   <img src="/public/customers.png" alt="Customers Screenshot" />
 </p>
-```
