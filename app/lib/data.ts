@@ -7,8 +7,9 @@ import {
   LatestInvoice,
   User,
   Revenue,
-  ProjectsTable,
-  Staff
+  ProjectForm,
+  Staff,
+  ProjectField,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -89,7 +90,6 @@ export async function fetchCardData() {
 const ITEMS_PER_PAGE = 6;
 
 export async function fetchFilteredInvoices(
-  
   query: string,
   currentPage: number,
 ) {
@@ -195,6 +195,94 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
+export async function fetchProjectById(id: string) {
+  noStore();
+  try {
+    const data = await sql<ProjectForm>`
+      SELECT
+        projects.id,
+        projects.name,
+        projects.description,
+        projects.amount,
+        projects.start_date,
+        projects.end_date,
+        projects.status
+      FROM projects
+      WHERE projects.id = ${id};
+    `;
+
+    const project = data.rows.map((project) => ({
+      ...project,
+      amount: project.amount / 100,
+    }));
+    console.log(project);
+
+    return project[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch project.');
+  }
+}
+
+export async function fetchFilteredProjects(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const data = await sql<ProjectForm>`
+		SELECT
+      projects.id,
+      projects.staff_id,
+      projects.name,
+      projects.description,
+      projects.amount,
+      projects.start_date,
+      projects.end_date,
+      projects.status,
+      ARRAY_AGG(staff.name) AS staff
+		FROM projects
+		LEFT JOIN staff ON projects.staff_id = staff.id
+		WHERE
+      projects.name ILIKE ${`%${query}%`} OR
+      projects.description ILIKE ${`%${query}%`}
+		GROUP BY projects.id, projects.staff_id, projects.name, projects.description, projects.amount, projects.start_date, projects.end_date, projects.status
+		ORDER BY projects.name ASC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+	  `;
+    // 0 staff assigned case
+    const projects = data.rows.map((project) => ({
+      ...project,
+      staff: project.amount || [],
+    }));
+
+    return projects;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch projects.');
+  }
+}
+
+export async function fetchProjects() {
+  try {
+    const data = await sql<ProjectField>`
+      SELECT
+        id,
+        name
+      FROM projects
+      ORDER BY name ASC
+    `;
+
+    const projects = data.rows;
+    return projects;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all projects.');
+  }
+}
+
 export async function fetchCustomers() {
   try {
     const data = await sql<CustomerField>`
@@ -210,71 +298,6 @@ export async function fetchCustomers() {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all customers.');
-  }
-}
-
-export async function fetchProjects() {
-  noStore();
-  try {
-    const data = await sql<ProjectsTable>`
-      SELECT
-        projects.id,
-        projects.name,
-        projects.description,
-        projects.amount,
-        projects.start_date,
-        projects.end_date,
-        projects.status,
-      FROM projects
-    `;
-
-    const projects = data.rows;
-    return projects;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all projects.');
-  }
-}
-
-export async function fetchFilteredProjects(
-  query: string,
-  currentPage: number,
-) {
-  noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const data = await sql<ProjectsTable>`
-		SELECT
-		  projects.id,
-		  projects.staff_id,
-		  projects.name,
-		  projects.description,
-		  projects.amount,
-		  projects.start_date,
-		  projects.end_date,
-		  projects.status,
-		  ARRAY_AGG(staff.name) AS staff
-		FROM projects
-		LEFT JOIN staff ON projects.staff_id = staff.id
-		WHERE
-		  projects.name ILIKE ${`%${query}%`} OR
-      projects.description ILIKE ${`%${query}%`}
-		GROUP BY projects.id, projects.staff_id, projects.name, projects.description, projects.amount, projects.start_date, projects.end_date, projects.status
-		ORDER BY projects.name ASC
-    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-	  `;
-    // 0 STAFF ASIGNED CASE
-    const projects = data.rows.map((project) => ({
-      ...project,
-      staff: project.amount || [],
-    })); 
-
-    return projects;
-    
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch projects.');
   }
 }
 
@@ -312,7 +335,10 @@ export async function fetchFilteredCustomers(query: string) {
   }
 }
 
-export async function fetchFilteredFewCustomers(query: string, currentPage: number) {
+export async function fetchFilteredFewCustomers(
+  query: string,
+  currentPage: number,
+) {
   noStore();
   try {
     const data = await sql<CustomersTableType>`
@@ -339,7 +365,7 @@ export async function fetchFilteredFewCustomers(query: string, currentPage: numb
       total_paid: formatCurrency(customer.total_paid),
     }));
 
-  return customers;
+    return customers;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');

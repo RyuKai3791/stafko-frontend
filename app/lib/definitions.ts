@@ -117,7 +117,6 @@ export type ProjectField = {
 export type ProjectForm = {
   id: string;
   staff_id: string;
-  all_staff: StaffField[];
   name: string;
   description: string;
   amount: number;

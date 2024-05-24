@@ -21,8 +21,8 @@ const ProjectSchema = z.object({
   name: z.string(),
   description: z.string(),
   amount: z.coerce.number(),
-  startDate: z.string(),
-  endDate: z.string(),
+  start_date: z.string(),
+  end_date: z.string(),
   status: z.enum(['active', 'completed']),
 });
 
@@ -102,12 +102,12 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function createProject(formData: FormData) {
-  const { name, description, amount, startDate, endDate, status } = CreateProject.parse({
+  const { name, description, amount, start_date, end_date, status } = CreateProject.parse({
     name: formData.get('name'),
     description: formData.get('description'),
     amount: formData.get('amount'),
-    startDate: formData.get('startDate'),
-    endDate: formData.get('endDate'),
+    startDate: formData.get('start_date'),
+    endDate: formData.get('end_date'),
     status: formData.get('status'),
   });
 
@@ -116,7 +116,7 @@ export async function createProject(formData: FormData) {
   try {
     await sql`
       INSERT INTO projects (name, description, amount, start_date, end_date, status)
-      VALUES (${name}, ${description}, ${amountInCents}, ${startDate}, ${endDate}, ${status})
+      VALUES (${name}, ${description}, ${amountInCents}, ${start_date}, ${end_date}, ${status})
     `;
   } catch (error) {
     return {
@@ -129,12 +129,12 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: string, formData: FormData) {
-  const { name, description, amount, startDate, endDate, status} = UpdateProject.parse({
+  const { name, description, amount, start_date, end_date, status} = UpdateProject.parse({
     name: formData.get('name'),
     description: formData.get('description'),
     amount: formData.get('amount'),
-    startDate: formData.get('startDate'),
-    endDate: formData.get('endDate'),
+    startDate: formData.get('start_date'),
+    endDate: formData.get('end_date'),
     status: formData.get('status'),
   });
 
@@ -144,7 +144,7 @@ export async function updateProject(id: string, formData: FormData) {
     await sql`
       UPDATE projects
       SET name = ${name}, description = ${description}, amount = ${amountInCents},
-        start_date = ${startDate}, end_date = ${endDate}, status = ${status}
+        start_date = ${start_date}, end_date = ${end_date}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
